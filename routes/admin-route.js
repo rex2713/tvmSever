@@ -46,4 +46,14 @@ router.post("/addCourt", async (req, res) => {
   }
 });
 
+router.delete("/deleteCourt", async (req, res) => {
+  //驗證是否為管理員身份
+  if (req.user.isUser())
+    return res.status(400).send("只有管理員可以刪除球場資料呦！");
+  //驗證球場資料格式是否符合規範
+  let { error } = courtValidation(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
+
+  let { _id } = req.body;
+});
 module.exports = router;
