@@ -68,7 +68,7 @@ router.delete("/:_id", async (req, res) => {
     });
 });
 //上傳球場照片API
-router.post("/upload", upload.single("file"), (req, res) => {
+router.post("/upload", upload.array("file", 4), (req, res) => {
   if (req.user.isUser())
     return res.status(400).send("只有管理員才可以上傳圖片唷！");
   console.log("成功上傳");
