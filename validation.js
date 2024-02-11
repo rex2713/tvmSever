@@ -31,6 +31,7 @@ const courtValidation = (data) => {
     isBus: Joi.boolean().required(),
     isMRT: Joi.boolean().required(),
     price: Joi.string().required(),
+    imgPath: Joi.array(),
   });
   return schema.validate(data);
 };

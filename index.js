@@ -24,7 +24,8 @@ mongoose
 //middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors()); //跨域鬆綁
+app.use(express.static("public")); //公開public資料夾（提供前端訪問權限）
 
 //路由
 app.use("/tvm/user", authRoute);

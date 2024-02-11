@@ -40,6 +40,9 @@ const courtSchema = new Schema({
     type: Number,
     default: 5,
   },
+  imgPath: {
+    type: Array,
+  },
 });
 
 module.exports = mongoose.model("Court", courtSchema);
