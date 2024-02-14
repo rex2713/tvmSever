@@ -3,6 +3,9 @@ const { Schema } = mongoose;
 const bcrypt = require("bcrypt");
 
 const userSchema = new Schema({
+  photoSelected: {
+    type: String,
+  },
   username: {
     type: String,
     required: true,
@@ -22,6 +25,14 @@ const userSchema = new Schema({
     type: String,
     default: "user",
     enum: ["user", "admin"],
+  },
+  skillLevel: {
+    type: String,
+    enum: ["新手", "系隊", "校隊", "體保"],
+  },
+  goodAtPosition: {
+    type: [String],
+    enum: ["主攻", "欄中", "副攻", "舉球", "自由"],
   },
 });
 

@@ -1,8 +1,13 @@
 const router = require("express").Router();
-const registerValidation = require("../validation").registerValidation;
 const User = require("../models").user;
+const registerValidation = require("../validation").registerValidation;
 const loginValidation = require("../validation").loginValidation;
+const updatesValidation = require("../validation").updatesValidation;
 const jwt = require("jsonwebtoken");
+const upload = require("../config/multer-user");
+const passport = require("passport");
+const { user } = require("../models");
+require("../config/passport")(passport);
 
 //middleware
 router.use((req, res, next) => {
@@ -16,7 +21,7 @@ router.get("/test", (req, res) => {
 });
 
 //註冊API
-router.post("/register", async (req, res) => {
+router.post("/register", upload.single("file"), async (req, res) => {
   //確認資料是否符合規範
   let { error } = registerValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);
@@ -29,6 +34,9 @@ router.post("/register", async (req, res) => {
   console.log("email驗證成功");
 
   //註冊新用戶
+
+  // const imgPath = "http://localhost:8080/userImages/" + req.file.filename;
+  // console.log(imgPath);
   let { username, email, password } = req.body;
   let newUser = new User({ username, email, password });
   try {
@@ -72,4 +80,83 @@ router.post("/login", async (req, res) => {
   });
 });
 
+//取得當前用戶資料
+router.get(
+  "/getCurrentUser",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    // console.log(req.user);
+  }
+);
+
+//更新用戶資料
+router.patch(
+  "/update/:_id",
+  passport.authenticate("jwt", { session: false }),
+  upload.single("file"),
+  async (req, res) => {
+    let { _id } = req.params;
+    let userFound = await User.findOne({ _id });
+
+    //確認資料格式是否符合規範
+    req.body.goodAtPosition = req.body.goodAtPosition.split(","); //將資料格式轉換成陣列
+    // console.log(typeof req.body.goodAtPosition);
+    let { error } = updatesValidation(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+    // console.log("更新資料格式正確");
+    if (req.body.photoSelected) {
+      let photoID = req.body.photoSelected;
+      switch (photoID) {
+        case "men1":
+          req.body.photoSelected = "http://localhost:8080/userImages/men1.png";
+          break;
+        case "men2":
+          req.body.photoSelected = "http://localhost:8080/userImages/men2.png";
+          break;
+        case "men3":
+          req.body.photoSelected = "http://localhost:8080/userImages/men3.png";
+          break;
+        case "men4":
+          req.body.photoSelected = "http://localhost:8080/userImages/men4.png";
+          break;
+        case "men5":
+          req.body.photoSelected = "http://localhost:8080/userImages/men5.png";
+          break;
+        case "men6":
+          req.body.photoSelected = "http://localhost:8080/userImages/men6.png";
+          break;
+        case "girl1":
+          req.body.photoSelected = "http://localhost:8080/userImages/girl1.png";
+          break;
+        case "girl2":
+          req.body.photoSelected = "http://localhost:8080/userImages/girl2.png";
+          break;
+        case "girl3":
+          req.body.photoSelected = "http://localhost:8080/userImages/girl3.png";
+          break;
+        case "girl4":
+          req.body.photoSelected = "http://localhost:8080/userImages/girl4.png";
+          break;
+        case "girl5":
+          req.body.photoSelected = "http://localhost:8080/userImages/girl5.png";
+          break;
+        case "girl6":
+          req.body.photoSelected = "http://localhost:8080/userImages/girl6.png";
+          break;
+      }
+    } else {
+      req.body.photoSelected =
+        "http://localhost:8080/userImages/" + req.file.filename;
+    }
+    try {
+      let updateUser = await User.findOneAndUpdate({ _id }, req.body, {
+        new: true,
+        runValidators: true,
+      });
+      return res.send({ message: "更新資料成功", updateUser });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+);
 module.exports = router;
