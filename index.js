@@ -46,6 +46,7 @@ app.use(
   adminRoute
 );
 
-app.listen(8080, () => {
-  console.log("Your app is listening on " + Default_URI);
+const port = process.env.PORT || 8080;
+app.listen(port, () => {
+  console.log("Your app is listening on port " + port);
 });
