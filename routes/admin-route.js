@@ -3,6 +3,9 @@ const router = express.Router();
 const Court = require("../models").court;
 const courtValidation = require("../validation").courtValidation;
 const upload = require("../config/multer-court");
+require("dotenv").config();
+
+const Default_URI = process.env.Default_URI;
 
 router.use((req, res, next) => {
   console.log("正在接受一個admin的相關請求");
@@ -21,7 +24,7 @@ router.post("/addCourt", upload.array("file", 4), async (req, res) => {
   //將四張照片路徑資料取出
   console.log(req.files);
   const imgPath = req.files.map(
-    (file) => "http://localhost:8080/images/" + file.filename
+    (file) => Default_URI + "images/" + file.filename
   );
   console.log(imgPath);
 
