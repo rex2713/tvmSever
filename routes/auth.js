@@ -8,6 +8,9 @@ const upload = require("../config/multer-user");
 const passport = require("passport");
 const { user } = require("../models");
 require("../config/passport")(passport);
+require("dotenv").config();
+
+const Default_URI = process.env.Default_URI;
 
 //middleware
 router.use((req, res, next) => {
@@ -108,45 +111,44 @@ router.patch(
       let photoID = req.body.photoSelected;
       switch (photoID) {
         case "men1":
-          req.body.photoSelected = "http://localhost:8080/userImages/men1.png";
+          req.body.photoSelected = Default_URI + "/userImages/men1.png";
           break;
         case "men2":
-          req.body.photoSelected = "http://localhost:8080/userImages/men2.png";
+          req.body.photoSelected = Default_URI + "/userImages/men2.png";
           break;
         case "men3":
-          req.body.photoSelected = "http://localhost:8080/userImages/men3.png";
+          req.body.photoSelected = Default_URI + "/userImages/men3.png";
           break;
         case "men4":
-          req.body.photoSelected = "http://localhost:8080/userImages/men4.png";
+          req.body.photoSelected = Default_URI + "/userImages/men4.png";
           break;
         case "men5":
-          req.body.photoSelected = "http://localhost:8080/userImages/men5.png";
+          req.body.photoSelected = Default_URI + "/userImages/men5.png";
           break;
         case "men6":
-          req.body.photoSelected = "http://localhost:8080/userImages/men6.png";
+          req.body.photoSelected = Default_URI + "/userImages/men6.png";
           break;
         case "girl1":
-          req.body.photoSelected = "http://localhost:8080/userImages/girl1.png";
+          req.body.photoSelected = Default_URI + "/userImages/girl1.png";
           break;
         case "girl2":
-          req.body.photoSelected = "http://localhost:8080/userImages/girl2.png";
+          req.body.photoSelected = Default_URI + "/userImages/girl2.png";
           break;
         case "girl3":
-          req.body.photoSelected = "http://localhost:8080/userImages/girl3.png";
+          req.body.photoSelected = Default_URI + "/userImages/girl3.png";
           break;
         case "girl4":
-          req.body.photoSelected = "http://localhost:8080/userImages/girl4.png";
+          req.body.photoSelected = Default_URI + "/userImages/girl4.png";
           break;
         case "girl5":
-          req.body.photoSelected = "http://localhost:8080/userImages/girl5.png";
+          req.body.photoSelected = Default_URI + "/userImages/girl5.png";
           break;
         case "girl6":
-          req.body.photoSelected = "http://localhost:8080/userImages/girl6.png";
+          req.body.photoSelected = Default_URI + "/userImages/girl6.png";
           break;
       }
     } else {
-      req.body.photoSelected =
-        "http://localhost:8080/userImages/" + req.file.filename;
+      req.body.photoSelected = Default_URI + "/userImages/" + req.file.filename;
     }
     try {
       let updateUser = await User.findOneAndUpdate({ _id }, req.body, {

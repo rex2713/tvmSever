@@ -10,6 +10,8 @@ const adminRoute = require("./routes").admin;
 const passport = require("passport");
 require("./config/passport")(passport);
 
+const Default_URI = process.env.Default_URI;
+
 //資料庫連接
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -41,5 +43,5 @@ app.use(
 );
 
 app.listen(8080, () => {
-  console.log("Your app is listening on port 8080");
+  console.log("Your app is listening on " + Default_URI);
 });
