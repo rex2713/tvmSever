@@ -28,6 +28,9 @@ router.get("/", async (req, res) => {
       }
     });
   };
+  const publicFiles = fs.readdir(publicFolder, (err, files) => {
+    return files;
+  });
 
   fs.readdir(renderDisk, (err, renderFiles) => {
     if (err) {
@@ -35,14 +38,7 @@ router.get("/", async (req, res) => {
       return;
     }
     for (let i = 0; i < renderFiles.length; i++) {
-      if (
-        renderFiles[i] !==
-        forEach(
-          fs.readdir(publicFolder, (err, files) => {
-            return files;
-          })
-        )
-      ) {
+      if (!publicFiles.includes(renderFiles[i])) {
         copy(renderFiles[i]);
       } else {
         console.log("已存在此檔案");
