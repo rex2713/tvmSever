@@ -28,9 +28,11 @@ router.get("/", async (req, res) => {
       }
     });
   };
-  const publicFiles = fs.readdir(publicFolder, (err, files) => {
+  const publicFiles = [];
+  publicFiles = fs.readdir(publicFolder, (err, files) => {
     return files;
   });
+  console.log("型別：" + typeof publicFiles);
 
   fs.readdir(renderDisk, (err, renderFiles) => {
     if (err) {
