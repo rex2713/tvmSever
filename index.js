@@ -44,47 +44,6 @@ app.use(
   adminRoute
 );
 
-//處理render部署永久磁碟
-app.get("/", (req, res) => {
-  //檢查圖檔是否存在public資料夾，如果沒有則從renderDisk複製
-  const renderDisk = "/var/data";
-  const publicFolder = "/opt/render/project/src/public/images";
-  //定義複製檔案函式
-  const copy = (file) => {
-    const copyPath = path.join(renderDisk, file);
-    const pastPath = path.join(publicFolder, file);
-    fs.copyFile(copyPath, pastPath, (err) => {
-      if (err) {
-        console.log("copy錯誤:" + err);
-      } else {
-        console.log("copy-success");
-      }
-    });
-  };
-
-  fs.readdir(renderDisk, (err, renderFiles) => {
-    if (err) {
-      console.error("讀取renderDisk錯誤:" + err);
-      return;
-    }
-    fs.readdir(publicFolder, (err, publicFiles) => {
-      //進行迴圈比對檔案是否存在
-      for (let i = 0; i < renderFiles.length; i++) {
-        if (err) {
-          console.error("讀取publicFolder錯誤:" + err);
-          return;
-        }
-        //不存在則複製到publicFolder
-        if (!publicFiles.includes(renderFiles[i])) {
-          copy(renderFiles[i]);
-        } else {
-          console.log("已存在此檔案");
-        }
-      }
-    });
-  });
-});
-
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
   console.log("Your app is listening on port " + port);
