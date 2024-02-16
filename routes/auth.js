@@ -148,7 +148,7 @@ router.patch(
           break;
       }
     } else {
-      req.body.photoSelected = Default_URI + "/userImages/" + req.file.filename;
+      req.body.photoSelected = Default_URI + "/images/" + req.file.filename;
     }
     try {
       let updateUser = await User.findOneAndUpdate({ _id }, req.body, {

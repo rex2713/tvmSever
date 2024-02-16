@@ -1,10 +1,13 @@
 const multer = require("multer");
 const path = require("path");
+require("dotenv").config();
+
+const Default_Upload = process.Default_Upload;
 
 const storage = multer.diskStorage({
   //檔案儲存位置
   destination: (req, file, cb) => {
-    cb(null, "public/userImages"); //存public
+    cb(null, Default_Upload);
   },
   //檔案儲存名稱
   filename: (req, file, cb) => {
