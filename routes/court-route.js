@@ -2,8 +2,6 @@ const express = require("express");
 const router = express.Router();
 const Court = require("../models").court;
 const courtValidation = require("../validation").courtValidation;
-const fs = require("fs");
-const path = require("path");
 
 router.use((req, res, next) => {
   console.log("正在接受一個court-route的相關請求");

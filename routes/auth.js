@@ -9,6 +9,8 @@ const passport = require("passport");
 const { user } = require("../models");
 require("../config/passport")(passport);
 require("dotenv").config();
+const fs = require("fs");
+const path = require("path");
 
 const Default_URI = process.env.Default_URI;
 
@@ -24,7 +26,7 @@ router.get("/test", (req, res) => {
 });
 
 //處理render部署永久磁碟
-app.get("/", (req, res) => {
+router.get("/", (req, res) => {
   //檢查圖檔是否存在public資料夾，如果沒有則從renderDisk複製
   const renderDisk = "/var/data";
   const publicFolder = "/opt/render/project/src/public/images";
