@@ -28,7 +28,7 @@ router.get("/", async (req, res) => {
       }
     });
   };
-  const publicFiles = [];
+  let publicFiles = [];
   publicFiles = fs.readdir(publicFolder, (err, files) => {
     return files;
   });
