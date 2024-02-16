@@ -44,8 +44,8 @@ app.use(
   adminRoute
 );
 
-//僅render部署需要
-app.use(() => {
+//處理render部署永久磁碟
+app.get("/", (req, res) => {
   //檢查圖檔是否存在public資料夾，如果沒有則從renderDisk複製
   const renderDisk = "/var/data";
   const publicFolder = "/opt/render/project/src/public/images";

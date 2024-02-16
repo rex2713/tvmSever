@@ -13,6 +13,7 @@ router.use((req, res, next) => {
 //獲得資料庫中所有球場資料
 router.get("/", async (req, res) => {
   console.log("正在獲取球場資料");
+
   try {
     let courtFound = await Court.find({}).exec();
     return res.send(courtFound);
