@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
 
   //檢查檔案是否存在public資料夾，如果沒有則從renderDisk複製
   const renderDisk = "/var/data";
-  const publicFolder = "/opt/render/project/src/public";
+  const publicFolder = "/opt/render/project/src/public/images";
   const copy = (file) => {
     const copyPath = path.join(renderDisk, file);
     const pastPath = path.join(publicFolder, file);
