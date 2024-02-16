@@ -14,34 +14,40 @@ router.use((req, res, next) => {
 router.get("/", async (req, res) => {
   console.log("正在獲取球場資料");
 
-  //測試複製圖檔
+  //檢查檔案是否存在public資料夾，如果沒有則從renderDisk複製
   const renderDisk = "/var/data";
   const publicFolder = "/opt/render/project/src/public";
-  fs.readdir(publicFolder, (err, files) => {
+  const copy = (file) => {
+    const copyPath = path.join(renderDisk, file);
+    const pastPath = path.join(publicFolder, file);
+    fs.copyFile(copyPath, pastPath, (err) => {
+      if (err) {
+        console.log("copy錯誤:" + err);
+      } else {
+        console.log("copy success");
+      }
+    });
+  };
+
+  fs.readdir(renderDisk, (err, renderFiles) => {
     if (err) {
       console.error(err);
       return;
-    } else {
-      console.log(files);
     }
-  });
-  fs.readdir(renderDisk, (err, files) => {
-    if (err) {
-      console.error("Error reading render disk:", err);
-      return;
+    for (let i = 0; i < renderFiles.length; i++) {
+      if (
+        renderFiles[i] !==
+        forEach(
+          fs.readdir(publicFolder, (err, files) => {
+            return files;
+          })
+        )
+      ) {
+        copy(renderFiles[i]);
+      } else {
+        console.log("已存在此檔案");
+      }
     }
-    console.log(files);
-    files.forEach((file) => {
-      const copyPath = path.join(renderDisk, file);
-      const pastPath = path.join(publicFolder, file);
-      fs.copyFile(copyPath, pastPath, (err) => {
-        if (err) {
-          console.error(err);
-        } else {
-          console.log("success copy");
-        }
-      });
-    });
   });
 
   try {
