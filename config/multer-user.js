@@ -2,7 +2,7 @@ const multer = require("multer");
 const path = require("path");
 require("dotenv").config();
 
-const Default_Upload = process.Default_Upload;
+const Default_Upload = process.env.Default_Upload;
 
 const storage = multer.diskStorage({
   //檔案儲存位置
