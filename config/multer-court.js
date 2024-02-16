@@ -4,8 +4,8 @@ const path = require("path");
 const storage = multer.diskStorage({
   //檔案儲存位置
   destination: (req, file, cb) => {
-    cb(null, "public/images"); //存public
-  },
+    cb(null, "/var/data"); //存public
+  }, //public/images
   //檔案儲存名稱
   filename: (req, file, cb) => {
     cb(
