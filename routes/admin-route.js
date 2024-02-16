@@ -24,7 +24,7 @@ router.post("/addCourt", upload.array("file", 4), async (req, res) => {
   //將四張照片路徑資料取出
   console.log(req.files);
   const imgPath = req.files.map(
-    (file) => "/var/data/" + file.filename
+    (file) => Default_URI + "/var/data/" + file.filename
     // (file) => Default_URI + "/images/" + file.filename
   );
   console.log(imgPath);
