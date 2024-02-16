@@ -28,17 +28,18 @@ router.get("/", async (req, res) => {
       }
     });
   };
-  let publicFiles = [];
-  publicFiles = fs.readdir(publicFolder, (err, files) => {
-    return files;
-  });
-  console.log("型別：" + typeof publicFiles);
 
   fs.readdir(renderDisk, (err, renderFiles) => {
     if (err) {
       console.error(err);
       return;
     }
+    let publicFiles = [];
+    publicFiles = fs.readdir(publicFolder, (err, files) => {
+      return files;
+    });
+    console.log("型別：" + typeof publicFiles);
+
     for (let i = 0; i < renderFiles.length; i++) {
       if (!publicFiles.includes(renderFiles[i])) {
         copy(renderFiles[i]);
