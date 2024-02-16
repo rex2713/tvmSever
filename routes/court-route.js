@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
 
   //測試複製圖檔
   const renderDisk = "/var/data";
-  const publicFolder = "images";
+  const publicFolder = "../public/images";
   fs.readdir(publicFolder, (err, files) => {
     if (err) {
       console.error(err);
