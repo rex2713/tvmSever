@@ -34,19 +34,17 @@ router.get("/", async (req, res) => {
       console.error(err);
       return;
     }
-    let publicFiles = [];
-    publicFiles = fs.readdir(publicFolder, (err, files) => {
-      return files;
-    });
-    console.log("型別：" + typeof publicFiles);
+    fs.readdir(publicFolder, (err, publicFiles) => {
+      console.log("型別：" + typeof publicFiles);
 
-    for (let i = 0; i < renderFiles.length; i++) {
-      if (!publicFiles.includes(renderFiles[i])) {
-        copy(renderFiles[i]);
-      } else {
-        console.log("已存在此檔案");
+      for (let i = 0; i < renderFiles.length; i++) {
+        if (!publicFiles.includes(renderFiles[i])) {
+          copy(renderFiles[i]);
+        } else {
+          console.log("已存在此檔案");
+        }
       }
-    }
+    });
   });
 
   try {
