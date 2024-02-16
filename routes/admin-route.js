@@ -14,7 +14,6 @@ router.use((req, res, next) => {
 
 //建立球場資料(包含上傳四張照片)
 router.post("/addCourt", upload.array("file", 4), async (req, res) => {
-  console.log("/var/data");
   //驗證是否為管理員身份
   if (req.user.isUser())
     return res.status(400).send("只有管理員可以新增球場資料呦！");

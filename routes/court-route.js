@@ -2,6 +2,15 @@ const express = require("express");
 const router = express.Router();
 const Court = require("../models").court;
 const courtValidation = require("../validation").courtValidation;
+const fs = require("fs");
+
+fs.readdir("/var/data", (err, files) => {
+  if (err) {
+    console.error("Error reading render disk:", err);
+    return;
+  }
+  console.log(files);
+});
 
 router.use((req, res, next) => {
   console.log("正在接受一個court-route的相關請求");
