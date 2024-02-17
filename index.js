@@ -34,7 +34,7 @@ app.use(
     origin: ["http://localhost:5173", "https://tvm-0wj4.onrender.com"],
   })
 );
-//處理預檢請求
+//處理預檢請求(Preflight Request)
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "https://tvm-0wj4.onrender.com");
   res.setHeader(

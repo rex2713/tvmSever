@@ -62,6 +62,7 @@ router.get("/", (req, res) => {
           console.log("已存在此檔案");
         }
       }
+      return res.send("完成renderDisk複製");
     });
   });
 });
