@@ -7,6 +7,7 @@ dotenv.config();
 const authRoute = require("./routes").auth;
 const courtRoute = require("./routes").court;
 const adminRoute = require("./routes").admin;
+const teamRoute = require("./routes").team;
 const passport = require("passport");
 require("./config/passport")(passport);
 
@@ -36,13 +37,14 @@ app.use(
 );
 //處理預檢請求(Preflight Request)
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://tvm-0wj4.onrender.com");
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+  //"https://tvm-0wj4.onrender.com"
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,CONNECT,TRACE"
   );
   res.setHeader(
-    "Access-Control-Allow-Header",
+    "Access-Control-Allow-Headers",
     "Content-Type, Authorization, token, X-Content-Type-Options, Accept, X-Requested-With, Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
   );
   //  Firefox caps this at 24 hours (86400 seconds). Chromium (starting in v76) caps at 2 hours (7200 seconds). The default value is 5 seconds.
@@ -53,6 +55,7 @@ app.use((req, res, next) => {
 //路由
 app.use("/tvm/user", authRoute);
 app.use("/tvm/court", courtRoute);
+app.use("/tvm/team", teamRoute);
 app.use(
   "/tvm/admin",
   passport.authenticate("jwt", { session: false }),

@@ -127,14 +127,13 @@ router.post("/login", async (req, res) => {
   });
 });
 
-//取得當前用戶資料
-router.get(
-  "/getCurrentUser",
-  passport.authenticate("jwt", { session: false }),
-  (req, res) => {
-    // console.log(req.user);
-  }
-);
+//使用id找到用戶
+router.get("/:_id", async (req, res) => {
+  let { _id } = req.params;
+  let userFound = await User.findOne({ _id });
+  if (!userFound) return res.status(400).send("沒有這個使用者");
+  return res.send(userFound);
+});
 
 //更新用戶資料
 router.patch(

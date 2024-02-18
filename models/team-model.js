@@ -26,3 +26,5 @@ const teamSchema = new Schema({
     },
   ],
 });
+
+module.exports = mongoose.model("team", teamSchema);

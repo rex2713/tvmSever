@@ -16,7 +16,7 @@ router.use((req, res, next) => {
 router.post("/addCourt", upload.array("file", 4), async (req, res) => {
   //驗證是否為管理員身份
   if (req.user.isUser())
-    return res.status(400).send("只有管理員可以新增球場資料呦！");
+    return res.status(403).send("只有管理員可以新增球場資料呦！");
   //驗證球場資料格式是否符合規範
   let { error } = courtValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);

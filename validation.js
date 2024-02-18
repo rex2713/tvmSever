@@ -27,7 +27,7 @@ const updatesValidation = (data) => {
     username: Joi.string().min(2).max(20),
     skillLevel: Joi.string().valid("新手", "系隊", "校隊", "體保"),
     goodAtPosition: Joi.array().items(
-      Joi.string().valid("主攻", "欄中", "副攻", "舉球", "自由")
+      Joi.string().valid("主攻", "攔中", "副攻", "舉球", "自由")
     ),
   });
   return schema.validate(data);
@@ -48,7 +48,20 @@ const courtValidation = (data) => {
   });
   return schema.validate(data);
 };
+
+//隊伍資料驗證
+const teamValidation = (data) => {
+  const schema = Joi.object({
+    court: Joi.string().required(),
+    date: Joi.date().required(),
+    teamName: Joi.string().max(10).min(2).required(),
+    teamLeader: Joi.string().required(),
+    teamMember: Joi.string(),
+  });
+  return schema.validate(data);
+};
 module.exports.registerValidation = registerValidation;
 module.exports.loginValidation = loginValidation;
 module.exports.courtValidation = courtValidation;
 module.exports.updatesValidation = updatesValidation;
+module.exports.teamValidation = teamValidation;

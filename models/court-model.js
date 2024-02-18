@@ -1,4 +1,5 @@
 const { boolean } = require("joi");
+const { ObjectId } = require("mongodb");
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
@@ -43,6 +44,12 @@ const courtSchema = new Schema({
   imgPath: {
     type: Array,
   },
+  teams: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Team",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Court", courtSchema);

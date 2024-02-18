@@ -29,11 +29,18 @@ const userSchema = new Schema({
   skillLevel: {
     type: String,
     enum: ["新手", "系隊", "校隊", "體保"],
+    default: "新手",
   },
   goodAtPosition: {
     type: [String],
-    enum: ["主攻", "欄中", "副攻", "舉球", "自由"],
+    enum: ["主攻", "攔中", "副攻", "舉球", "自由"],
   },
+  teams: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Team",
+    },
+  ],
 });
 
 //instance methods
