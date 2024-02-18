@@ -152,16 +152,55 @@ router.patch(
   }
 );
 
-//使用username來找到user資料
-passport.authenticate("jwt", { session: false }),
-  router.get("/:username", async (req, res) => {
-    let { username } = req.params;
+//使用email來找到user資料
+router.get(
+  "/:email",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    let { email } = req.params;
     // console.log(username);
-    let userFound = await User.find(
-      { username },
+    let userFound = await User.findOne(
+      { email },
       { username: 1, photoSelected: 1, skillLevel: 1, goodAtPosition: 1 }
     );
-    console.log(userFound);
-  });
+    // console.log(userFound);
+    res.send(userFound);
+  }
+);
+
+//隨機獲得資料庫中的十位user;
+router.get(
+  "/auth/radomTen",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    let userCount;
+    try {
+      userCount = await User.countDocuments();
+      // console.log(userCount);
+      //生成十個隨機數（範圍在0~User資料庫的數量)
+      const userIndexes = [];
+      while (userIndexes.length < 10) {
+        const userIndex = Math.floor(Math.random() * userCount);
+        if (!userIndexes.includes(userIndex)) userIndexes.push(userIndex);
+      }
+      // console.log(userIndexes);
+      //依照生成的隨機數來取得User資料
+      let radomUsers = await Promise.all(
+        userIndexes.map((index) => {
+          let foundUser = User.findOne(
+            {},
+            { username: 1, photoSelected: 1, skillLevel: 1, goodAtPosition: 1 }
+          ).skip(index);
+          return foundUser;
+        })
+      );
+      // console.log(radomUsers);
+      return res.send(radomUsers);
+    } catch (e) {
+      // console.log(e);
+      return res.status(500).send("獲取十位隨機用戶失敗");
+    }
+  }
+);
 
 module.exports = router;
