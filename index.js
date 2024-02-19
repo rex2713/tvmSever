@@ -12,6 +12,7 @@ const passport = require("passport");
 require("./config/passport")(passport);
 
 const Default_URI = process.env.Default_URI;
+const PreFlight_Request = process.env.PreFlight_Request;
 
 //資料庫連接
 mongoose
@@ -37,8 +38,7 @@ app.use(express.static("public")); //公開public資料夾（提供前端訪問�
 // );
 //處理預檢請求(Preflight Request)
 app.use((req, res, next) => {
-  // res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
-  res.setHeader("Access-Control-Allow-Origin", "https://tvm-0wj4.onrender.com");
+  res.setHeader("Access-Control-Allow-Origin", PreFlight_Request);
 
   res.setHeader(
     "Access-Control-Allow-Methods",
