@@ -3,6 +3,8 @@ const router = express.Router();
 const teamValidation = require("../validation").teamValidation;
 const passport = require("passport");
 const { resolve } = require("path");
+const upload = require("../config/multer-court");
+const { default: mongoose } = require("mongoose");
 const Team = require("../models").team;
 const Court = require("../models").court;
 const User = require("../models").user;
@@ -64,16 +66,33 @@ router.get("/", async (req, res) => {
 //建立隊伍資料(需jwt)
 router.post(
   "/auth/teamCreate",
+  upload.none(),
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
+    console.log("正在建立球場");
+    //處理球場資料格式
+    let { court, teamMember } = req.body;
+    let courtFound = await Court.findOne({ courtName: court });
+    if (courtFound) {
+      court = courtFound._id;
+    } else {
+      return res.status(400).send("找不到此球場");
+    }
+    // console.log(typeof teamMember);
+    teamMember = JSON.parse(teamMember);
+    // console.log(teamMember);
+    const { ObjectId } = mongoose.Types;
+    const objectIdArray = teamMember.map((id) => new ObjectId(id));
+    teamMember = objectIdArray;
+    console.log(typeof objectIdArray);
+
     //驗證資料格式
     let { error } = teamValidation(req.body);
-    if (error) {
-      return res.status(400).send(error.details[0].message);
-    }
+    if (error) return res.status(400).send(error.details[0].message);
+    console.log("驗證格式完成");
     //獲取隊伍資料並儲存到資料庫
     try {
-      let { court, date, teamName, teamLeader, teamMember } = req.body;
+      let { date, teamName, teamLeader } = req.body;
       let newTeam = new Team({
         court,
         date,

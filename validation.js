@@ -56,7 +56,7 @@ const teamValidation = (data) => {
     date: Joi.date().required(),
     teamName: Joi.string().max(10).min(2).required(),
     teamLeader: Joi.string().required(),
-    teamMember: Joi.string(),
+    teamMember: Joi.any(),
   });
   return schema.validate(data);
 };
