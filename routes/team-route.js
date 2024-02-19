@@ -222,4 +222,45 @@ router.get(
   }
 );
 
+//獲得此使用者所加入的隊伍資料(包含球場、隊友資料處理)
+router.get(
+  "/auth/ownTeam/:_id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    let { _id } = req.params;
+    console.log(_id);
+    try {
+      let userFound = await User.findOne({ _id }, { username: 1, teams: 1 });
+      let foundTeams = [];
+      // console.log(userFound.teams);
+      await Promise.all(
+        userFound.teams.map(async (teamId) => {
+          let team = await Team.findOne({ _id: teamId });
+          foundTeams.push(team);
+          // console.log(foundTeams.length);
+        })
+      );
+      // await Promise.all(
+      //   foundTeams.map(async (team) => {
+      //     let id = team.court.toString();
+      //     let courtFound = await Court.findOne({ _id: id }, { courtName: 1 });
+      //     // console.log(courtFound.courtName);
+      //     // console.log(team);
+      //     delete team.teamName;
+
+      //     // console.log(courtFound.courtName);
+      //     console.log(team);
+      //   })
+      // );
+
+      // console.log(foundTeams);
+      res.send(foundTeams);
+    } catch (e) {
+      res.status(500).send("獲取隊伍資料失敗");
+    }
+
+    // res.send(userFound);
+  }
+);
+
 module.exports = router;

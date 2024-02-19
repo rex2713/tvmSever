@@ -26,7 +26,7 @@ router.post("/addCourt", upload.array("file", 4), async (req, res) => {
   const imgPath = req.files.map(
     (file) => Default_URI + "/images/" + file.filename
   );
-  console.log(imgPath);
+  // console.log(imgPath);
 
   let {
     courtName,
