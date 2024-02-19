@@ -30,11 +30,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public")); //公開public資料夾（提供前端訪問權限）
 
 //跨域鬆綁
-app.use(
-  cors({
-    origin: ["http://localhost:5173", "https://tvm-0wj4.onrender.com"],
-  })
-);
+// app.use(
+//   cors({
+//     origin: ["http://localhost:5173", "https://tvm-0wj4.onrender.com"],
+//   })
+// );
 //處理預檢請求(Preflight Request)
 app.use((req, res, next) => {
   // res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
