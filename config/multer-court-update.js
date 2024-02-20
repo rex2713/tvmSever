@@ -18,16 +18,17 @@ const storage = multer.diskStorage({
         "_" +
         Date.now() +
         uuidv4() +
-        path.extname(file.originalname)
+        path.extname(file.originalname) +
+        ".jpg"
     );
   },
 });
 
-const upload = multer({
+const updateCourt = multer({
   storage: storage,
   limits: {
     fieldSize: 300000, // 限制非檔案字段大小
   },
 });
 
-module.exports = upload;
+module.exports = updateCourt;
