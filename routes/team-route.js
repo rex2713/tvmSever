@@ -228,38 +228,42 @@ router.get(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     let { _id } = req.params;
-    console.log(_id);
+    // console.log(_id);
     try {
-      let userFound = await User.findOne({ _id }, { username: 1, teams: 1 });
+      let userFound = await User.findOne({ _id });
       let foundTeams = [];
-      // console.log(userFound.teams);
+      let teamMembers = [];
+
       await Promise.all(
         userFound.teams.map(async (teamId) => {
           let team = await Team.findOne({ _id: teamId });
-          foundTeams.push(team);
-          // console.log(foundTeams.length);
+          // console.log(team);
+          if (team) {
+            let court = await Court.findOne({ _id: team.court });
+            let memberPromises = team.teamMember.map(async (member) => {
+              return await User.findOne({ _id: member._id });
+            });
+            let teamMembers = await Promise.all(memberPromises);
+            // console.log(teamMembers);
+
+            if (court && teamMembers) {
+              team.court = court;
+              team.teamMember = teamMembers;
+              // console.log(court.courtName);
+              // console.log(member.username);
+
+              return foundTeams.push(team);
+            }
+          }
         })
       );
-      // await Promise.all(
-      //   foundTeams.map(async (team) => {
-      //     let id = team.court.toString();
-      //     let courtFound = await Court.findOne({ _id: id }, { courtName: 1 });
-      //     // console.log(courtFound.courtName);
-      //     // console.log(team);
-      //     delete team.teamName;
-
-      //     // console.log(courtFound.courtName);
-      //     console.log(team);
-      //   })
-      // );
-
       // console.log(foundTeams);
+
       res.send(foundTeams);
     } catch (e) {
+      console.log(e);
       res.status(500).send("獲取隊伍資料失敗");
     }
-
-    // res.send(userFound);
   }
 );
 
