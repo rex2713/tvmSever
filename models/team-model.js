@@ -1,4 +1,4 @@
-const { date } = require("joi");
+const { date, string } = require("joi");
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
@@ -25,6 +25,12 @@ const teamSchema = new Schema({
       ref: "User",
     },
   ],
+  teamBoard: {
+    type: Array,
+  },
+  teamMessage: {
+    type: Array,
+  },
 });
 
-module.exports = mongoose.model("team", teamSchema);
+module.exports = mongoose.model("Team", teamSchema);

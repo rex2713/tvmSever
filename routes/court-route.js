@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Court = require("../models").court;
+const Team = require("../models").team;
 // const courtValidation = require("../validation").courtValidation;
 
 router.use((req, res, next) => {
@@ -16,6 +17,18 @@ router.get("/", async (req, res) => {
     return res.send(courtFound);
   } catch (e) {
     res.status(500).send(e);
+  }
+});
+//獲得指定id的球場資料
+router.get("/getCourt/:_id", async (req, res) => {
+  console.log("正在取得指定id球場資料");
+  try {
+    let { _id } = req.params;
+    let courtFound = await Court.findOne({ _id }).populate("teams");
+    console.log(courtFound);
+    res.send(courtFound);
+  } catch (e) {
+    console.log(e);
   }
 });
 

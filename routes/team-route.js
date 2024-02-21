@@ -428,5 +428,33 @@ router.delete(
       });
   }
 );
+//取得聊天室資料
+router.get(
+  "/auth/teamMessageGet/:_id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    let { _id } = req.params;
+    let messageFound = await Team.findOne({ _id }, { teamMessage: 1 });
+    res.send(messageFound);
+  }
+);
+//送出聊天室資料
+router.patch(
+  "/auth/teamMessageSend/:_id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    console.log(123);
+    try {
+      let { _id } = req.params;
+      let { message } = req.body;
+      let team = await Team.findOne({ _id });
+      team.teamMessage.push(message);
+      // await team.save();
+      console.log(team);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+);
 
 module.exports = router;
