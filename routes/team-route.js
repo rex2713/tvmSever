@@ -228,26 +228,46 @@ router.get(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     let { _id } = req.params;
-    // console.log(_id);
+    console.log(_id);
     try {
       let userFound = await User.findOne({ _id });
       let foundTeams = [];
-      let teamMembers = [];
 
       await Promise.all(
         userFound.teams.map(async (teamId) => {
           let team = await Team.findOne({ _id: teamId });
           // console.log(team);
           if (team) {
-            let court = await Court.findOne({ _id: team.court });
+            let court = await Court.findOne(
+              { _id: team.court },
+              { courtName: 1 }
+            );
+            let leader = await User.findOne(
+              { _id: team.teamLeader },
+              {
+                username: 1,
+                goodAtPosition: 1,
+                skillLevel: 1,
+                photoSelected: 1,
+              }
+            );
             let memberPromises = team.teamMember.map(async (member) => {
-              return await User.findOne({ _id: member._id });
+              return await User.findOne(
+                { _id: member._id },
+                {
+                  username: 1,
+                  goodAtPosition: 1,
+                  skillLevel: 1,
+                  photoSelected: 1,
+                }
+              );
             });
             let teamMembers = await Promise.all(memberPromises);
             // console.log(teamMembers);
 
             if (court && teamMembers) {
               team.court = court;
+              team.teamLeader = leader;
               team.teamMember = teamMembers;
               // console.log(court.courtName);
               // console.log(member.username);
@@ -264,6 +284,148 @@ router.get(
       console.log(e);
       res.status(500).send("獲取隊伍資料失敗");
     }
+  }
+);
+
+//使用id取得隊伍資料，包含隊長、隊員、球場
+router.get(
+  "/auth/teamInfo/:_id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    let { _id } = req.params;
+    let teamFound = await Team.findOne({ _id });
+    let courtFound = await Court.findOne(
+      { _id: teamFound.court },
+      { courtName: 1 }
+    );
+    let teamLeader = await User.findOne(
+      { _id: teamFound.teamLeader },
+      {
+        username: 1,
+        goodAtPosition: 1,
+        skillLevel: 1,
+        photoSelected: 1,
+      }
+    );
+    let memberFound = [];
+    await Promise.all(
+      teamFound.teamMember.map(async (member) => {
+        // console.log(member);
+        let teamMember = await User.findOne(
+          { _id: member },
+          {
+            username: 1,
+            goodAtPosition: 1,
+            skillLevel: 1,
+            photoSelected: 1,
+          }
+        );
+        memberFound.push(teamMember);
+      })
+    );
+    teamFound.court = courtFound;
+    teamFound.teamLeader = teamLeader;
+    teamFound.teamMember = memberFound;
+    console.log(teamFound);
+    res.json(teamFound);
+  }
+);
+
+//隊伍管理頁面刪除隊員｜｜退出隊伍
+//更新隊伍資料庫＆＆更新使用者資料庫
+router.patch(
+  "/auth/teamLeave/:user_id/:team_id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    let { user_id, team_id } = req.params;
+    //取得資料
+    let userFound = await User.findOne({ _id: user_id }, { teams: 1 });
+    let teamFound = await Team.findOne({ _id: team_id }, { teamMember: 1 });
+    //刪除資料
+    userFound.teams = userFound.teams.filter((team) => team._id != team_id);
+    teamFound.teamMember = teamFound.teamMember.filter(
+      (user) => user._id != user_id
+    );
+    try {
+      //更新資料
+      await userFound.save();
+      await teamFound.save();
+      res.send("更新使用者資料庫及隊伍資料庫成功");
+    } catch (e) {
+      res.status(500).send("更新使用者資料庫及隊伍資料庫失敗");
+    }
+  }
+);
+
+//隊伍管理頁面新增隊員
+//更新隊伍資料庫＆＆更新使用者資料庫
+router.patch(
+  "/auth/teamAdd/:user_id/:team_id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    let { user_id, team_id } = req.params;
+    //取得資料
+    let userFound = await User.findOne({ _id: user_id }, { teams: 1 });
+    let teamFound = await Team.findOne({ _id: team_id }, { teamMember: 1 });
+    console.log(userFound);
+    console.log(teamFound);
+    //新增資料
+    userFound.teams.push(team_id);
+    teamFound.teamMember.push(user_id);
+    // console.log(userFound);
+    // console.log(teamFound);
+    try {
+      //更新資料
+      await userFound.save();
+      await teamFound.save();
+      res.send("更新使用者資料庫及隊伍資料庫成功");
+    } catch (e) {
+      res.status(500).send("更新使用者資料庫及隊伍資料庫失敗");
+    }
+  }
+);
+
+router.delete(
+  "/auth/teamDelete/:user_ids/:team_id/:court_id",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    let { user_ids, team_id, court_id } = req.params;
+    // console.log(user_ids);
+    // console.log(team_id);
+    // console.log(court_id);
+    let userIdArray = user_ids.split(",");
+    // console.log(userIdArray);
+    //取出userId數組的每一筆User資料
+    let userFound = await User.find(
+      { _id: { $in: userIdArray } },
+      { teams: 1 }
+    );
+    console.log(userFound);
+
+    let userNew = userFound.map(async (user) => {
+      let newUser = await User.updateOne(
+        { _id: user._id },
+        { $pull: { teams: team_id } }
+      );
+      return newUser;
+    });
+    let teamFound = await Team.findOneAndDelete({ _id: team_id });
+    let courtFound = await Court.findOneAndUpdate(
+      { _id: court_id },
+      { $pull: { teams: team_id } }
+    );
+
+    await Promise.all(userNew)
+      .then(() => {
+        // console.log(userFound);
+        console.log(userNew);
+        // console.log(teamFound);
+        // console.log("刪除隊伍成功");
+        res.send("刪除隊伍成功");
+      })
+      .catch((e) => {
+        res.status(500).send("更新資料庫失敗" + e);
+      });
   }
 );
 
