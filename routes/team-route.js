@@ -433,6 +433,7 @@ router.get(
   "/auth/teamMessageGet/:_id",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
+    console.log(12345);
     let { _id } = req.params;
     let messageFound = await Team.findOne({ _id }, { teamMessage: 1 });
     res.send(messageFound);
@@ -443,16 +444,16 @@ router.patch(
   "/auth/teamMessageSend/:_id",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    console.log(123);
     try {
       let { _id } = req.params;
       let { message } = req.body;
       let team = await Team.findOne({ _id });
       team.teamMessage.push(message);
-      // await team.save();
-      console.log(team);
+      await team.save();
+      // console.log(team);
+      res.send("成功發送訊息");
     } catch (e) {
-      console.log(e);
+      res.status(500).send("發送訊息失敗");
     }
   }
 );
